@@ -28,13 +28,10 @@ class Payment {
       '${instructor.name} has received ${course.courseFee} for ${course.courseName}',
     );
   }
+
   //function to make the calculat all corses fee for the student
   int calculateTotalPayment() {
-    int totalPayment = 0;
-    for (String courseName in student.courses) {
-      totalPayment += course.courseFee; // Add the course fee to the total payment
-    }
-    return totalPayment;
+    // Sum the fee for every course the student is enrolled in
+    return student.enrolledCourses.length * course.courseFee;
   }
-  
 }

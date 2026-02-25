@@ -1,29 +1,34 @@
 import 'package:mahmoud_new/models/courses.dart';
 
-Courses course1 = Courses(
+final Courses course1 = Courses(
   courseName: 'Math',
+  courseCode: 'MATH101',
+  courseDescription: 'Basic Mathematics',
+  instructorName: 'Dr. Smith',
   courseFee: 100,
   limitOfStudents: 3,
   studentsEnrolled: [],
-   courseCode: 'MATH101',
-    courseDescription: 'Basic Mathematics',
-     instructorName: 'Dr. Smith',
 );
-Courses course2 = Courses(
+
+final Courses course2 = Courses(
   courseName: 'Science',
-  courseFee: 150,
-  limitOfStudents: 3,
-  studentsEnrolled: [], 
   courseCode: 'SCI101',
   courseDescription: 'Basic Science',
   instructorName: 'Dr. Johnson',
+  courseFee: 150,
+  limitOfStudents: 3,
+  studentsEnrolled: [],
 );
-Courses course3 = Courses(
+
+final Courses course3 = Courses(
   courseName: 'History',
+  courseCode: 'HIST101',
+  courseDescription: 'Basic History',
+  instructorName: 'Dr. Williams',
   courseFee: 120,
   limitOfStudents: 3,
   studentsEnrolled: [],
-   courseCode: 'HIST101', 
-   courseDescription: 'Basic History',
-    instructorName: 'Dr. Williams',
-);  
+);
+
+/// All courses in a list for easy iteration
+final List<Courses> allCourses = [course1, course2, course3];

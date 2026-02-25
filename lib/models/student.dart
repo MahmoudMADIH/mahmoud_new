@@ -2,21 +2,20 @@ class Student {
   final String name;
   final int age;
   final String grade;
-  final List<String> courses ;
-  final int totalPayment ;
-  int geneeratedId = 1000;
+  List<String> enrolledCourses; // mutable – courses added at runtime
+  int totalPayment;
+  static int _idCounter = 1000;
+  final int studentId;
 
   Student({
     required this.name,
-     required this.age, 
-     required this.grade,
-     required this.courses, 
-     required this.totalPayment,
-     });
-  int generateId() {
-    geneeratedId++;
-    return geneeratedId;
-  }
+    required this.age,
+    required this.grade,
+    List<String>? enrolledCourses,
+    this.totalPayment = 0,
+  }) : enrolledCourses = enrolledCourses ?? [],
+       studentId = ++_idCounter;
 
-  void enroll() {}
+  @override
+  String toString() => 'Student{id: $studentId, name: $name}';
 }
