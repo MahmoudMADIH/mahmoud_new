@@ -14,6 +14,6 @@ class Instrctor {
      required this.email, 
      required this.phone, 
      required this.salary,
-      required this.courses
+      required this.courses, required List<String> coursesTaught, required int age
       });
 }
