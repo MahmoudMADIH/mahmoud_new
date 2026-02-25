@@ -1,38 +1,16 @@
- import 'package:mahmoud_new/models/student.dart';
+import 'package:mahmoud_new/models/student.dart';
 
-Student student1 = Student(
-    name: 'John Doe',
-    age: 20,
-    grade: 'A',
-    courses: ['Math', 'Science'], 
-    totalPayment: 0,
-  );
-  Student student2 = Student(
-    name: 'Jane Smith',
-    age: 22,
-    grade: 'B',
-    courses: ['Math', 'History'],
-    totalPayment: 0
-  );
-  Student student3 = Student(
-    name: 'Alice Johnson',
-    age: 19,
-    grade: 'A',
-    courses: ['Science', 'History'],
-    totalPayment: 0
-  );
-  Student student4 = Student(
-    name: 'Bob Brown',
-    age: 21,
-    grade: 'C',
-    courses: ['Math', 'Science', 'History'],
-    totalPayment: 0
-  );
-  Student student5 = Student(
-    name: 'Emily Davis',
-    age: 20,
-    grade: 'B',
-    courses: ['Math', 'Science'],
-    totalPayment: 0
-  );
-  
+final Student student1 = Student(name: 'mohmmed', age: 20, grade: 'A');
+final Student student2 = Student(name: 'ashrif', age: 22, grade: 'B');
+final Student student3 = Student(name: 'yossef', age: 19, grade: 'A');
+final Student student4 = Student(name: 'Belal', age: 21, grade: 'C');
+final Student student5 = Student(name: 'esmail', age: 20, grade: 'B');
+
+/// All students in a list for easy iteration
+final List<Student> allStudents = [
+  student1,
+  student2,
+  student3,
+  student4,
+  student5,
+];

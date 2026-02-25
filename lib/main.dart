@@ -1,72 +1,266 @@
-// the intery point of the app
+// Entry point of the Course Management System
 import 'dart:io';
 
+import 'package:mahmoud_new/data/coursesData.dart';
+import 'package:mahmoud_new/data/instructorData.dart';
 import 'package:mahmoud_new/data/studenData.dart';
+import 'package:mahmoud_new/models/courses.dart';
+import 'package:mahmoud_new/models/instrctor.dart';
+import 'package:mahmoud_new/models/student.dart';
 
-///What you need to solve:
+// ─────────────────────────────────────────────
+//  Helper utilities
+// ─────────────────────────────────────────────
 
-//🧠 Real system challenges
-//1️⃣ Prevents a student from registering for a full course
-//2️⃣ Prevents the same student from registering twice
-//3️⃣ Calculates the company's total profits
-//4️⃣ Calculates the instructor's salary based on a percentage of the course fees
-//5️⃣ Generates a comprehensive management report*/
-void main() {
-  print('Welcome to the Course Management System!');
- //start to make the program that will give to user lest to make it chose the action that will do 
-  print('Please choose an action:');
-  print('1. Enroll a student in a course');
-  print('2. Make a payment for a course');
-  print('3. Generate a management report');
-  // here you can add the functionality to take the user input and call the corresponding functions based on the user's choice    
-  if (1 == 1) {
-    print('You have chosen to enroll a student in a course');
-    //start to make the program that will give to user lest to make it chose the action that will do
-    //make the user select the course that wwill enroll in it and the student that will enroll in the course  
-    print('Please choose a course to enroll in:');
-    print('1. Math');
-    print('2. Science');
-    print('3. History');
-    int courseChoise = int.parse(stdin.readLineSync()!);
-    print('Please choose a student to enroll:');
-    print('1. John Doe');
-    print('2. Jane Smith');
-    print('3. Alice Johnson');
-    print('4. Bob Brown');
-    print('5. Emily Davis');
-    int instructorChoise = int.parse(stdin.readLineSync()!);
-    // here you can add the functionality to take the user input and call the corresponding functions based
-    // here you can add the functionality to enroll a student in a course
-    // add the asudent to the coyrse and check if the course is full or not and check if the student is already enrolled in the course or not 
-    // if the student is already enrolled in the course print that the student is already enrolled in the course
-    // if the course is full print that the course is full
-    // if the student is already enrolled in the course print that the student is already enrolled in the course
-    // if the student is already enrolled in the course print that the student is already enrolled in the course
-    if (courseChoise == 1 && instructorChoise == 1) {
-      student1.enroll();
-    }
-    if (courseChoise == 2 && instructorChoise == 2) {
-      student2.enroll();
-    }
-    if (courseChoise == 3 && instructorChoise == 3) {
-      student3.enroll();
-    }
-    if (courseChoise == 4 && instructorChoise == 4) {
-      student4.enroll();
-    }
-    if (courseChoise == 5 && instructorChoise == 5) {
-      student5.enroll();
-    }
-    ///make the user select the course that wwill enroll in it and the student that will enroll in the course 
-    /// here you can add the functionality to take the user input and call the corresponding functions based on the user's choice
-    
-
-  } else if (2 == 2) {
-    print('You have chosen to make a payment for a course');
-
-  } else if (3 == 3) {
-    print('You have chosen to generate a management report');
+void printDivider([String title = '']) {
+  if (title.isEmpty) {
+    print('─' * 55);
   } else {
-    print('Invalid choice. Please try again.');
+    final pad = ((55 - title.length - 2) / 2).floor();
+    final line = '─' * pad;
+    print('$line $title $line');
+  }
+}
+
+int readInt(String prompt, {int min = 1, int max = 999}) {
+  while (true) {
+    stdout.write(prompt);
+    final raw = stdin.readLineSync()?.trim() ?? '';
+    final value = int.tryParse(raw);
+    if (value != null && value >= min && value <= max) return value;
+    print('  ⚠️  Please enter a number between $min and $max.');
+  }
+}
+
+void listCourses() {
+  for (int i = 0; i < allCourses.length; i++) {
+    final c = allCourses[i];
+    print(
+      '  ${i + 1}. ${c.courseName} '
+      '| Fee: \$${c.courseFee} '
+      '| Enrolled: ${c.studentsEnrolled.length}/${c.limitOfStudents} '
+      '| Instructor: ${c.instructorName}',
+    );
+  }
+}
+
+void listStudents() {
+  for (int i = 0; i < allStudents.length; i++) {
+    final s = allStudents[i];
+    final enrolled = s.enrolledCourses.isEmpty
+        ? 'none'
+        : s.enrolledCourses.join(', ');
+    print(
+      '  ${i + 1}. ${s.name} (ID: ${s.studentId}) | Grade: ${s.grade} | Courses: $enrolled',
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+//  ✅ Challenge 1 & 2 – Enrol student in course
+//     Prevents full-course enrolment  (ch.1)
+//     Prevents duplicate enrolment    (ch.2)
+// ─────────────────────────────────────────────
+
+void handleEnrolment() {
+  printDivider('Enrol a Student');
+
+  print('\nAvailable Courses:');
+  listCourses();
+  final courseIdx =
+      readInt(
+        'Select course (1-${allCourses.length}): ',
+        max: allCourses.length,
+      ) -
+      1;
+  final Courses selectedCourse = allCourses[courseIdx];
+
+  print('\nAvailable Students:');
+  listStudents();
+  final studentIdx =
+      readInt(
+        'Select student (1-${allStudents.length}): ',
+        max: allStudents.length,
+      ) -
+      1;
+  final Student selectedStudent = allStudents[studentIdx];
+
+  // ── Guard 1: course full? ──────────────────────────────────────
+  // ── Guard 2: already enrolled? ────────────────────────────────
+  final success = selectedCourse.enrollStudent(selectedStudent.name);
+
+  if (success) {
+    // Keep student's own course list in sync
+    selectedStudent.enrolledCourses.add(selectedCourse.courseName);
+    // Charge the fee
+    selectedStudent.totalPayment += selectedCourse.courseFee;
+    print(
+      '   💰 \$${selectedCourse.courseFee} added to ${selectedStudent.name}\'s account '
+      '(total: \$${selectedStudent.totalPayment}).',
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+//  ✅ Challenge 3 – Company total profits
+// ─────────────────────────────────────────────
+
+int calcTotalProfits() {
+  int total = 0;
+  for (final course in allCourses) {
+    total += course.studentsEnrolled.length * course.courseFee;
+  }
+  return total;
+}
+
+// ─────────────────────────────────────────────
+//  ✅ Challenge 4 – Instructor salary (% of fees)
+// ─────────────────────────────────────────────
+
+/// Each instructor earns their base salary PLUS [percentage] of the
+/// total fees collected from the course(s) they teach.
+double calcInstructorEarnings(
+  Instrctor instructor, {
+  double percentage = 0.30,
+}) {
+  int feesCollected = 0;
+  for (final courseName in instructor.coursesTaught) {
+    final match = allCourses.where((c) => c.courseName == courseName);
+    if (match.isNotEmpty) {
+      final c = match.first;
+      feesCollected += c.studentsEnrolled.length * c.courseFee;
+    }
+  }
+  return instructor.salary + feesCollected * percentage;
+}
+
+// ─────────────────────────────────────────────
+//  ✅ Challenge 5 – Comprehensive management report
+// ─────────────────────────────────────────────
+
+void generateReport() {
+  printDivider('MANAGEMENT REPORT');
+
+  // ── Course overview ──────────────────────────────────────────
+  print('\n📚 COURSES');
+  printDivider();
+  for (final c in allCourses) {
+    print('  Course  : ${c.courseName} (${c.courseCode})');
+    print('  Desc    : ${c.courseDescription}');
+    print('  Fee     : \$${c.courseFee}');
+    print('  Limit   : ${c.limitOfStudents}');
+    print('  Instructor: ${c.instructorName}');
+    if (c.studentsEnrolled.isEmpty) {
+      print('  Students: (none enrolled)');
+    } else {
+      print('  Students: ${c.studentsEnrolled.join(', ')}');
+    }
+    print(
+      '  Status  : ${c.isFull() ? "🔴 FULL" : "🟢 Open (${c.limitOfStudents - c.studentsEnrolled.length} seat(s) left)"}',
+    );
+    printDivider();
+  }
+
+  // ── Student overview ─────────────────────────────────────────
+  print('\n🎓 STUDENTS');
+  printDivider();
+  for (final s in allStudents) {
+    print('  Name    : ${s.name}  (ID: ${s.studentId})');
+    print('  Age     : ${s.age}  | Grade: ${s.grade}');
+    final enrolled = s.enrolledCourses.isEmpty
+        ? 'none'
+        : s.enrolledCourses.join(', ');
+    print('  Courses : $enrolled');
+    print('  Paid    : \$${s.totalPayment}');
+    printDivider();
+  }
+
+  // ── Instructor salaries (Challenge 4) ────────────────────────
+  print('\n👨‍🏫 INSTRUCTOR EARNINGS  (base salary + 30% of course fees)');
+  printDivider();
+  for (final inst in allInstructors) {
+    final earnings = calcInstructorEarnings(inst);
+    print('  ${inst.name}');
+    print('  Email   : ${inst.email}  | Phone: ${inst.phone}');
+    print('  Courses : ${inst.coursesTaught.join(', ')}');
+    print('  Base salary  : \$${inst.salary}');
+    print('  Total earnings: \$${earnings.toStringAsFixed(2)}');
+    printDivider();
+  }
+
+  // ── Company profits (Challenge 3) ────────────────────────────
+  final profits = calcTotalProfits();
+  print('\n🏢 COMPANY TOTAL PROFITS');
+  printDivider();
+  for (final c in allCourses) {
+    final revenue = c.studentsEnrolled.length * c.courseFee;
+    print('  ${c.courseName.padRight(10)}: ${c.studentsEnrolled.length} student(s) × \$${ c.courseFee} = \$$revenue');
+  }
+  final divLine = '─' * 45;
+  print('  $divLine');
+  print('  Total Revenue : \$$profits');
+
+  // Deduct instructor bonus (30% of fees goes to instructors)
+  double totalInstructorBonus = 0;
+  for (final inst in allInstructors) {
+    for (final courseName in inst.coursesTaught) {
+      final match = allCourses.where((c) => c.courseName == courseName);
+      if (match.isNotEmpty) {
+        totalInstructorBonus +=
+            match.first.studentsEnrolled.length * match.first.courseFee * 0.30;
+      }
+    }
+  }
+  final netProfit = profits - totalInstructorBonus;
+  print('  Instructor Bonuses  : \$${totalInstructorBonus.toStringAsFixed(2)}');
+  print('  ✅ Net Company Profit: \$${netProfit.toStringAsFixed(2)}');
+  printDivider();
+}
+
+// ─────────────────────────────────────────────
+//  Main – interactive menu loop
+// ─────────────────────────────────────────────
+
+void main() {
+  printDivider('Course Management System');
+  print(
+    '  Welcome! All 5 system challenges are active:\n'
+    '  1️⃣  Prevents enrolment in a FULL course\n'
+    '  2️⃣  Prevents DUPLICATE enrolment\n'
+    '  3️⃣  Calculates company TOTAL PROFITS\n'
+    '  4️⃣  Calculates INSTRUCTOR salary (base + 30% of fees)\n'
+    '  5️⃣  Generates a comprehensive MANAGEMENT REPORT',
+  );
+  printDivider();
+
+  while (true) {
+    print('\n📋 MAIN MENU');
+    print('  1. Enrol a student in a course');
+    print('  2. View all courses');
+    print('  3. View all students');
+    print('  4. Generate management report');
+    print('  5. Exit');
+
+    final choice = readInt('Enter your choice (1-5): ', max: 5);
+
+    switch (choice) {
+      case 1:
+        handleEnrolment();
+        break;
+      case 2:
+        printDivider('All Courses');
+        listCourses();
+        break;
+      case 3:
+        printDivider('All Students');
+        listStudents();
+        break;
+      case 4:
+        generateReport();
+        break;
+      case 5:
+        print('\n👋 Goodbye! See you next time.');
+        return;
+    }
   }
 }
