@@ -14,6 +14,6 @@ class Courses {
     required this.courseDescription,
     required this.instructorName,
     required this.courseFee,
-    required this.studentsEnrolled,
+    required this.studentsEnrolled, required int limitOfStudents,
   });
 }

@@ -10,10 +10,13 @@ class Student {
     required this.name,
      required this.age, 
      required this.grade,
-     required this.courses,
+     required this.courses, 
+     required this.totalPayment,
      });
   int generateId() {
     geneeratedId++;
     return geneeratedId;
   }
+
+  void enroll() {}
 }
